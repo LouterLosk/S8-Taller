@@ -1,4 +1,4 @@
-#define MAXPRODUCTS 1
+#define MAXPRODUCTS 5
 #define LONGITUD 100
 #define RECURSOSINI 1000
 
