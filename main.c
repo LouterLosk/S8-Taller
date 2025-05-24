@@ -5,6 +5,8 @@ Cada producto tiene un tiempo de fabricación específico y requiere una cantida
 El equipo de ingeniería ha identificado que la línea de producción tiene limitaciones de tiempo y recursos que deben ser tomadas en cuenta.
 Tiempo de fabricaccion 
 cantidad de recursos
+
+Miembros Ethan Flores Isaac Vasquez Miguel Ruales
 */
 
 int main()
