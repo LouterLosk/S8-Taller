@@ -3,17 +3,27 @@
 #include <string.h>
 #include <ctype.h>
 
-void IngresoProducto(int valor,char producto[][LONGITUD],int recursos[MAXPRODUCTS],int tiempo[][3]){
+void IngresoProducto(int valor,int Maxproducts,char producto[][LONGITUD],int recursos[MAXPRODUCTS],int tiempo[][3]){
         char mensaje[LONGITUD];
-        for (int i = valor; i < MAXPRODUCTS; i++) {
+        int cont = 0;
+        for (int i = valor; i < Maxproducts; i++) {
         printf("---------------------------------------------\n");
         printf("Producto %d\n", i + 1);
         guardarPalabra("Ingrese el nombre: ", producto[i], LONGITUD);
         recursos[i] = leerNumeroEnteroEntre("Ingrese la cantidad necesaria de recursos: ",1000,1);
-        printf("Tiempo de fabricacion\n");
-        tiempo[i][0] = leerNumeroEnteroEntre("Ingrese las horas: ",23,0);
-        tiempo[i][1] = leerNumeroEnteroEntre("Ingrese los minutos: ",59,0);
-        tiempo[i][2] = leerNumeroEnteroEntre("Ingrese los segundos: ",59,0);
+        do
+        {
+            printf("Tiempo de fabricacion\n");
+            tiempo[i][0] = leerNumeroEnteroEntre("Ingrese las horas: ",23,0);
+            tiempo[i][1] = leerNumeroEnteroEntre("Ingrese los minutos: ",59,0);
+            tiempo[i][2] = leerNumeroEnteroEntre("Ingrese los segundos: ",59,0);
+            if((tiempo[i][0]||tiempo[i][1]||tiempo[i][2]) == 0 ){
+                printf("Debe ingresar un valor\n");
+                cont = 1;
+            }else{
+                cont = 0;
+            }
+        } while (cont == 1);
         printf("---------------------------------------------\n");
     }
 }
@@ -102,7 +112,7 @@ void Eleccion(int eleccion,int *continuar,char producto[][LONGITUD],int recursos
             valor = buscarEspacioLibre(producto);
             if (valor != -1)
             {
-                IngresoProducto(valor,producto,recursos,tiempo);
+                IngresoProducto(valor,MAXPRODUCTS,producto,recursos,tiempo);
             }else{
                 printf("No se puede agregar mas productos");
             }
@@ -113,7 +123,7 @@ void Eleccion(int eleccion,int *continuar,char producto[][LONGITUD],int recursos
         valor = BuscarProdutcoEncontrado(producto,recursos,tiempo);
         mostrarProducto(valor,producto,recursos,tiempo);
         printf("Editar el prodcto:\n");
-        IngresoProducto(valor,producto,recursos,tiempo);
+        IngresoProducto(valor,valor + 1,producto,recursos,tiempo);
         break;
     case 3 :
         valor = 0;

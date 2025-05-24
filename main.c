@@ -14,7 +14,7 @@ int main()
     int recursos[MAXPRODUCTS];
     int tiempo[MAXPRODUCTS][3];
     maxRecursos = leerNumeroEnteroEntre("Ingrese la cantidad de recursos: ",10000,0);
-    IngresoProducto(0,productos,recursos,tiempo);
+    IngresoProducto(0,MAXPRODUCTS,productos,recursos,tiempo);
     Menu(productos,recursos,tiempo,&maxRecursos);
     return 0;
 }
