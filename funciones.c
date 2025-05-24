@@ -77,7 +77,7 @@ int leerNumeroEnteroEntre(char *mensaje,int max,int min){
     return valor;
 }
 
-int Menu(char productos[][LONGITUD],int recursos[],int tiempo[][3],int *maxRecursos){
+int Menu(char productos[][LONGITUD],int recursos[],int tiempo[][3],int *maxRecursos,int *maxTiempo){
     int continuar = 0;
     int eleccion = 0;
     do
@@ -92,12 +92,12 @@ int Menu(char productos[][LONGITUD],int recursos[],int tiempo[][3],int *maxRecur
         printf("6. Salir\n");
         eleccion = leerNumeroEnteroEntre("Seleccione una opcion: ",6,1);
         printf("\n");
-        Eleccion(eleccion,&continuar,productos,recursos,tiempo,maxRecursos);
+        Eleccion(eleccion,&continuar,productos,recursos,tiempo,maxRecursos,maxTiempo);
     } while (continuar == 0); 
     return 1;
 }
 
-void Eleccion(int eleccion,int *continuar,char producto[][LONGITUD],int recursos[],int tiempo[][3],int *maxRecursos){
+void Eleccion(int eleccion,int *continuar,char producto[][LONGITUD],int recursos[],int tiempo[][3],int *maxRecursos,int *maxTiempo){
     int valor = 0;
     int seleccion = 0;
     int recursosIni = *maxRecursos;
@@ -137,11 +137,12 @@ void Eleccion(int eleccion,int *continuar,char producto[][LONGITUD],int recursos
         valor = BuscarProdutcoEncontrado(producto,recursos,tiempo);
         mostrarProducto(valor,producto,recursos,tiempo);
         cantidad = leerNumeroEnteroEntre("Ingrese la cantidad de productos que desea crear: ",1000,0);
-        crearProducto(cantidad,producto[valor],recursos[valor],tiempo[valor],maxRecursos);
+        crearProducto(cantidad,producto[valor],recursos[valor],tiempo[valor],maxRecursos,maxTiempo);
         break;
     case 5 :
         printf("---------------------------------------------\n");
         printf("En el inventario existe %d de recursos\n",recursosIni);
+        printf("El maximo de timpo es %d",*maxTiempo);
         printf("---------------------------------------------\n");
         for (int i = 0; i < MAXPRODUCTS; i++)
         {
@@ -224,13 +225,13 @@ int buscarEspacioLibre(char producto[][LONGITUD]) {
     return -1; // No hay espacio libre
 }
 
-void crearProducto(int Cantidad,char nombre[],int recursos,int tiempo[3],int *maxRecursos){
+void crearProducto(int Cantidad,char nombre[],int recursos,int tiempo[3],int *maxRecursos,int *maxTiempo){
     int TotalSegundos = (tiempo[2]+tiempo[1]*60+tiempo[0]*3600);
     TotalSegundos *= Cantidad; 
     int horas = TotalSegundos / 3600;
     int minutos = (TotalSegundos % 3600)/60;
     int segundos = TotalSegundos % 60;
-         if ((Cantidad * recursos) > *maxRecursos)
+         if ((Cantidad * recursos) > *maxRecursos || (*maxTiempo <(TotalSegundos / 3600)))
         {
             printf("Se ha exedido la cantidad maxima de recursos\n");
         }else{
