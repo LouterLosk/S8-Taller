@@ -21,3 +21,4 @@ int main(){
     Menu(productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad);
     return 0;
 }
+                        

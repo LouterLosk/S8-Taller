@@ -41,12 +41,12 @@ int Menu(char productos[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRe
     {
         printf("\n");
         printf("\n----- Menu -----\n");
-        printf("1. Ingresar producto\n");
-        printf("2. Editar producto\n");
-        printf("3. Eliminar producto\n");
-        printf("4. Calcular tiempo y recursos\n");
-        printf("5. Verificar productos\n");
-        printf("6. Salir\n");
+            printf("1. Ingresar producto\n");
+            printf("2. Editar producto\n");
+            printf("3. Eliminar producto\n");
+            printf("4. Calcular tiempo y recursos\n");
+            printf("5. Verificar productos\n");
+            printf("6. Salir\n");
         printf("\n-----------------\n");
         eleccion = leerNumeroEnteroEntre("Seleccione una opcion: ",6,1);
         printf("\n");
@@ -71,7 +71,7 @@ int Menu(char productos[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRe
                 printf("Editar el producto:\n");
                 IngresoProducto(productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad, valor, valor + 1);
             }
-        break;
+break;
         case 3:
             valor = BuscarProdutcoEncontrado(productos);
             if (valor != -1) {
@@ -112,6 +112,7 @@ int BuscarProdutcoEncontrado(char nombre[][LONGITUD]){
             }
         }
         printf("Producto no encontrado.\n");
+        repetir = leerNumeroEnteroEntre("Desea volver a intentar 1.si 2.No\n",2,0);
     }
     return -1;
 }
