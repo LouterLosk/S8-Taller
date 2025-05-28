@@ -1,14 +1,11 @@
-#define MAXPRODUCTS 5
+#define MAXPRODUCTS 2
 #define LONGITUD 100
-#define RECURSOSINI 1000
+
 
 
 int Menu(char productos[][LONGITUD],int recursos[],int tiempo[][3],int *maxRecursos,int *maxTiempo);
-void convertirMinusculas(char *cadena);
 void guardarPalabra(char *mensaje, char destino[], int longitud); 
-int VerificarNoNumero(char destino[]);
 int leerNumeroEnteroEntre(char *mensaje,int max,int min);
-void Eleccion(int eleccion,int *continuar,char producto[][LONGITUD],int recursos[],int tiempo[][3],int *maxRecursos,int *maxTiempo);
 void IngresoProducto(int valor,int Maxproducts,char producto[][LONGITUD],int recursos[MAXPRODUCTS],int tiempo[][3]);
 int findProducto(char destino[],char nombreBuscado[]);
 int BuscarProdutcoEncontrado(char nombre[][LONGITUD],int recursos[],int tiempo[][3]);
