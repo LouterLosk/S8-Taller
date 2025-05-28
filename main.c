@@ -10,38 +10,54 @@ cantidad de recursos
 Miembros Ethan Flores Isaac Vasquez Miguel Ruales
 */
 #define MAXPRODUCTS 5
+#define MAXRECURSOS 5
 #define LONGITUD 100
 
-int Menu(char productos[][LONGITUD], int recursos[], float tiempo[], int cantidad[]);
+int Menu(char productos[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[]);
 void guardarPalabra(char *mensaje, char destino[], int longitud); 
 int leerNumeroEnteroEntre(char *mensaje,int max,int min);
-void IngresoProducto(char producto[][LONGITUD], int recursos[], float tiempo[], int cantidad[], int desde, int hasta) ;
+void IngresoProducto(char producto[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[], int desde, int hasta);
 int findProducto(char destino[],char nombreBuscado[]);
 int BuscarProdutcoEncontrado(char nombre[][LONGITUD]);
-void mostrarProducto(int i, char nombre[][LONGITUD], int recursos[], float tiempo[], int cantidad[]);
-void eliminarProducto(int NrProducto, char nombre[][LONGITUD], int recursos[], float tiempo[],int cantidad[]);
+void mostrarProducto(int i, char nombre[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[]);
+void eliminarProducto(int NrProducto, char nombre[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[]);
 int buscarEspacioLibre(char producto[][LONGITUD]);
-void calcularYVerificar(char productos[][LONGITUD], int recursos[], float tiempo[], int cantidad[], int total_productos);
+void calcularYVerificar(char productos[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[], int total_productos);
 float leerNumeroFlotanteEntre(char *mensaje,int max,int min);
 
 int main(){
     char productos[MAXPRODUCTS][LONGITUD] = {0};
-    int recursos[1000];
-    float tiempo[MAXPRODUCTS];
+    int recursos[MAXPRODUCTS][MAXRECURSOS] = {0};
+    int variedadRecursos[MAXPRODUCTS] = {0};
+    char nombreRecursos[MAXPRODUCTS][MAXRECURSOS][LONGITUD] = {0};
+    float tiempo[MAXPRODUCTS] = {0};
     int cantidad[MAXPRODUCTS] = {0};
-    Menu(productos, recursos, tiempo, cantidad);
+    Menu(productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad);
     return 0;
 }
 
-void IngresoProducto(char producto[][LONGITUD], int recursos[], float tiempo[], int cantidad[], int desde, int hasta) {
+void IngresoProducto(char producto[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[], int desde, int hasta) {
     for (int i = desde; i < hasta && i < MAXPRODUCTS; i++) {
         printf("---------------------------------------------\n");
         printf("Producto %d\n", i + 1);
         guardarPalabra("Ingrese el nombre: ", producto[i], LONGITUD);
-        recursos[i] = leerNumeroEnteroEntre("Ingrese la cantidad necesaria de recursos: ", 1000, 1);
-        cantidad[i] = leerNumeroEnteroEntre("Ingrese la demanda de este producto: ", 1000, 1);
+
+        // Preguntar variedad de recursos
+        variedadRecursos[i] = leerNumeroEnteroEntre("Cuantos tipos de recursos necesita este producto? (max 5): ", MAXRECURSOS, 1);
+
+        // Por cada recurso, pedir nombre y cantidad
+        for (int j = 0; j < variedadRecursos[i]; j++) {
+            char mensaje[LONGITUD + 50];
+            sprintf(mensaje, "Ingrese el nombre del recurso #%d: ", j + 1);
+            guardarPalabra(mensaje, nombreRecursos[i][j], LONGITUD);
+
+            sprintf(mensaje, "Cuantas unidades de %s necesita por producto?: ", nombreRecursos[i][j]);
+            recursos[i][j] = leerNumeroEnteroEntre(mensaje, 1000, 1);
+        }
+
+        cantidad[i] = leerNumeroEnteroEntre("Cuantos productos de este tipo se necesitan?: ", 1000, 1);
         printf("Tiempo de fabricacion\n");
-        tiempo[i] = leerNumeroFlotanteEntre("Ingrese la cantidad necesaria de tiempo(minutos): ", 10000, 1);
+        tiempo[i] = leerNumeroFlotanteEntre("Ingrese la cantidad necesaria de tiempo (minutos): ", 10000, 1);
         if (tiempo[i] == 0) {
             printf("Debe ingresar un valor\n");
         }
@@ -49,7 +65,7 @@ void IngresoProducto(char producto[][LONGITUD], int recursos[], float tiempo[], 
     }
 }
 
-int Menu(char productos[][LONGITUD], int recursos[], float tiempo[], int cantidad[]){
+int Menu(char productos[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[]){
     int continuar = 0;
     int eleccion = 0;
     int valor = 0;
@@ -75,7 +91,7 @@ int Menu(char productos[][LONGITUD], int recursos[], float tiempo[], int cantida
                 if (hasta > MAXPRODUCTS) {
                     hasta = MAXPRODUCTS;
                 }
-                IngresoProducto(productos, recursos, tiempo, cantidad, valor, hasta);
+                IngresoProducto(productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad, valor, hasta);
             } else {
                 printf("No se puede agregar mas productos\n");
             }
@@ -83,31 +99,36 @@ int Menu(char productos[][LONGITUD], int recursos[], float tiempo[], int cantida
         case 2: 
             valor = BuscarProdutcoEncontrado(productos);
             if (valor != -1) {
-                mostrarProducto(valor, productos, recursos, tiempo,cantidad);
+                mostrarProducto(valor, productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad);
                 printf("Editar el producto:\n");
-                IngresoProducto(productos, recursos, tiempo,cantidad, valor, valor + 1);
+                IngresoProducto(productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad, valor, valor + 1);
             }
         break;
-        case 3 : eliminarProducto(valor,productos,recursos,tiempo,cantidad);
-            break;
-        case 4 : calcularYVerificar(productos, recursos, tiempo, cantidad, MAXPRODUCTS);
-            break;
-        case 5 :
-            for (int i = 0; i < MAXPRODUCTS; i++)
-            {
-                mostrarProducto(i,productos,recursos,tiempo,cantidad);
+        case 3:
+            valor = BuscarProdutcoEncontrado(productos);
+            if (valor != -1) {
+                eliminarProducto(valor, productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad);
             }
             break;
-        case 6 :
+        case 4:
+            calcularYVerificar(productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad, MAXPRODUCTS);
+            break;
+        case 5:
+            for (int i = 0; i < MAXPRODUCTS; i++) {
+                if (productos[i][0] != '\0')
+                    mostrarProducto(i, productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad);
+            }
+            break;
+        case 6:
             continuar = 1;
-            printf("Saliendo.....");
+            printf("Saliendo.....\n");
             break;
         default:
             break;
         }
     } while (continuar == 0); 
     return 1;
-    }
+}
 
 int BuscarProdutcoEncontrado(char nombre[][LONGITUD]){
     char nombreBuscado[LONGITUD];
@@ -124,36 +145,42 @@ int BuscarProdutcoEncontrado(char nombre[][LONGITUD]){
         }
         printf("Producto no encontrado.\n");
     }
+    return -1;
 }
 
 int findProducto(char destino[],char nombreBuscado[]){
-        if (strcmp(destino, nombreBuscado) == 0) {
-            return 0;
-        }else{
-            return 1;
-        }
+    if (strcmp(destino, nombreBuscado) == 0) {
+        return 0;
+    }else{
+        return 1;
     }
+}
 
-void eliminarProducto(int NrProducto, char nombre[][LONGITUD], int recursos[], float tiempo[],int cantidad[]) {
-    printf("Eliminar el producto:\n");
-    int valor;
-        valor = BuscarProdutcoEncontrado(nombre);
-        mostrarProducto(valor,nombre,recursos,tiempo,cantidad);
-
+void eliminarProducto(int NrProducto, char nombre[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[]) {
     if (NrProducto < 0 || NrProducto >= MAXPRODUCTS) {
         printf("Índice de producto inválido.\n");
         return;
     }
     // Mover los productos siguientes una posición hacia arriba
-    for (int i = valor; i < MAXPRODUCTS - 1; i++) {
+    for (int i = NrProducto; i < MAXPRODUCTS - 1; i++) {
         strcpy(nombre[i], nombre[i + 1]);
-        recursos[i] = recursos[i + 1];
+        cantidad[i] = cantidad[i + 1];
         tiempo[i] = tiempo[i + 1];
+        variedadRecursos[i] = variedadRecursos[i + 1];
+        for (int j = 0; j < MAXRECURSOS; j++) {
+            recursos[i][j] = recursos[i + 1][j];
+            strcpy(nombreRecursos[i][j], nombreRecursos[i + 1][j]);
+        }
     }
     // Limpiar el último producto
     nombre[MAXPRODUCTS - 1][0] = '\0';
-    recursos[MAXPRODUCTS - 1] = 0;
+    cantidad[MAXPRODUCTS - 1] = 0;
     tiempo[MAXPRODUCTS - 1] = 0;
+    variedadRecursos[MAXPRODUCTS - 1] = 0;
+    for (int j = 0; j < MAXRECURSOS; j++) {
+        recursos[MAXPRODUCTS - 1][j] = 0;
+        nombreRecursos[MAXPRODUCTS - 1][j][0] = '\0';
+    }
     printf("Producto eliminado correctamente.\n");
 }
 
@@ -166,42 +193,53 @@ int buscarEspacioLibre(char producto[][LONGITUD]) {
     return -1; // No hay espacio libre
 }
 
-void calcularYVerificar(char productos[][LONGITUD], int recursos[], float tiempo[], int cantidad[], int total_productos) {
-    int cantidadFabricar, idx;
-    int maxRecursos, maxTiempo;
+void calcularYVerificar(char productos[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[], int total_productos) {
+    int cantidadFabricar, id;
+    int maxRecursos[MAXRECURSOS];
+    int maxTiempo;
     char nombreBuscado[LONGITUD];
-
-    // Pedir recursos y tiempo disponibles
-    maxRecursos = leerNumeroEnteroEntre("Ingrese la cantidad de recursos disponibles: ", 10000, 1);
-    maxTiempo = leerNumeroEnteroEntre("Ingrese el tiempo disponible (en minutos): ", 10000, 1);
 
     // Pedir el nombre del producto
     guardarPalabra("Ingrese el nombre del producto: ", nombreBuscado, LONGITUD);
 
     // Buscar el producto
-    idx = -1;
+    id = -1;
     for (int i = 0; i < total_productos; i++) {
         if (strcmp(productos[i], nombreBuscado) == 0) {
-            idx = i;
+            id = i;
             break;
         }
     }
-    if (idx == -1) {
+    if (id == -1) {
         printf("Producto no encontrado.\n");
         return;
     }
 
     // Mostrar el producto y su cantidad actual
-    mostrarProducto(idx, productos, recursos, tiempo, cantidad);
+    mostrarProducto(id, productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad);
+
+    // Pedir recursos disponibles para cada tipo de recurso
+    for (int j = 0; j < variedadRecursos[id]; j++) {
+        char mensaje[LONGITUD + 50];
+        sprintf(mensaje, "Ingrese la cantidad disponible de %s: ", nombreRecursos[id][j]);
+        maxRecursos[j] = leerNumeroEnteroEntre(mensaje, 10000, 1);
+    }
+    maxTiempo = leerNumeroEnteroEntre("Ingrese el tiempo disponible (en minutos): ", 10000, 1);
 
     // Calcular requerimientos
-    int recursosNecesarios = cantidad[idx] * recursos[idx];
-    float tiempoNecesario = cantidad[idx] * tiempo[idx];
+    int recursosNecesarios[MAXRECURSOS];
+    int puede = 1;
+    for (int j = 0; j < variedadRecursos[id]; j++) {
+        recursosNecesarios[j] = cantidad[id] * recursos[id][j];
+        printf(">> %s requerido: %d unidades\n", nombreRecursos[id][j], recursosNecesarios[j]);
+        if (recursosNecesarios[j] > maxRecursos[j]) {
+            puede = 0;
+        }
+    }
+    float tiempoNecesario = cantidad[id] * tiempo[id];
+    printf(">> Tiempo requerido: %.2f minutos\n", tiempoNecesario);
 
-    printf("\n>> Tiempo requerido: %.2f minutos\n", tiempoNecesario);
-    printf(">> Recursos requeridos: %d unidades\n", recursosNecesarios);
-
-    if (tiempoNecesario <= maxTiempo && recursosNecesarios <= maxRecursos)
+    if (tiempoNecesario <= maxTiempo && puede)
         printf("La fabrica puede cumplir con la demanda.\n");
     else
         printf("No es posible cumplir con la demanda.\n");
@@ -217,19 +255,17 @@ void guardarPalabra(char *mensaje, char destino[], int longitud) {
                 destino[len - 1] = '\0'; // Elimina el salto de línea
             }
             // Verificar que no contenga números
+            esValido = 1;
             for (size_t i = 0; i < strlen(destino); i++) {
                 if (isdigit(destino[i])) { // Si hay un número
                     printf("Error: No se permiten numeros. Intente de nuevo.\n");
-                    i = strlen(destino);
                     esValido = 0;
-                }else{
-                    esValido = 1;
+                    break;
                 }
             }
-        }else 
-            {
+        }else {
             printf("Error al leer la entrada.\n");
-            }
+        }
     }
     for (int i = 0; destino[i] != '\0'; i++) {
         destino[i] = tolower(destino[i]);
@@ -249,13 +285,16 @@ int leerNumeroEnteroEntre(char *mensaje,int max,int min){
     return valor;
 }
 
-void mostrarProducto(int i, char nombre[][LONGITUD],int recursos[], float tiempo[],int cantidad[]) {
+void mostrarProducto(int i, char nombre[][LONGITUD], int recursos[][MAXRECURSOS], int variedadRecursos[], char nombreRecursos[][MAXRECURSOS][LONGITUD], float tiempo[], int cantidad[]) {
     printf("---------------------------------------------\n");
     printf("Producto: %d\n", i + 1);
     printf("Nombre: %s\n", nombre[i]);
-    printf("Recursos: %d\n", recursos[i]);
-    printf("Cantidad: %d\n", cantidad[i]);
-    printf("Tiempo: %.2f\n", tiempo[i]);
+    printf("Cantidad a fabricar: %d\n", cantidad[i]);
+    printf("Recursos necesarios:\n");
+    for (int j = 0; j < variedadRecursos[i]; j++) {
+        printf("  - %s: %d unidades por producto\n", nombreRecursos[i][j], recursos[i][j]);
+    }
+    printf("Tiempo: %.2f minutos\n", tiempo[i]);
     printf("---------------------------------------------\n");
 }
 

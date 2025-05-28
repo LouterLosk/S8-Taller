@@ -1,4 +1,5 @@
 *.exe
-pruebas.c
+prueba.c
 *.o
 *.json
+prueba.c
