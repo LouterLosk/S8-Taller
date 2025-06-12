@@ -23,9 +23,9 @@ void IngresoProducto(char producto[][LONGITUD], int recursos[][MAXRECURSOS], int
             recursos[i][j] = leerNumeroEnteroEntre(mensaje, 1000, 1);
         }
 
-        cantidad[i] = leerNumeroEnteroEntre("Cuantos productos de este tipo se necesitan?: ", 1000, 1);
+        cantidad[i] = leerNumeroEnteroEntre("Cual es la demanda del producto?: ", 1000, 1);
         printf("Tiempo de fabricacion\n");
-        tiempo[i] = leerNumeroFlotanteEntre("Ingrese la cantidad necesaria de tiempo (minutos): ", 10000, 1);
+        tiempo[i] = leerNumeroFlotanteEntre("Ingrese la cantidad necesaria de tiempo (minutos): ", 2147483646, 1);
         if (tiempo[i] == 0) {
             printf("Debe ingresar un valor\n");
         }
@@ -193,7 +193,7 @@ void calcularYVerificar(char productos[][LONGITUD], int recursos[][MAXRECURSOS],
         sprintf(mensaje, "Ingrese la cantidad disponible de %s: ", nombreRecursos[id][j]);
         maxRecursos[j] = leerNumeroEnteroEntre(mensaje, 10000, 1);
     }
-    maxTiempo = leerNumeroEnteroEntre("Ingrese el tiempo disponible (en minutos): ", 10000, 1);
+    maxTiempo = leerNumeroEnteroEntre("Ingrese el tiempo disponible (en minutos): ", 2147483646, 1);
 
     // Calcular requerimientos
     int recursosNecesarios[MAXRECURSOS];

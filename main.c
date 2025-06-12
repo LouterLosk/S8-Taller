@@ -18,6 +18,8 @@ int main(){
     char nombreRecursos[MAXPRODUCTS][MAXRECURSOS][LONGITUD] = {0};
     float tiempo[MAXPRODUCTS] = {0};
     int cantidad[MAXPRODUCTS] = {0};
+    printf("-----------------------------\n");
+    printf("Primero ingrese productos!!!!\n");
     Menu(productos, recursos, variedadRecursos, nombreRecursos, tiempo, cantidad);
     return 0;
 }
